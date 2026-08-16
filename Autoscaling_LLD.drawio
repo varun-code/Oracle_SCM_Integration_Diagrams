@@ -1,0 +1,308 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="HYSNBIsGd67Bum6oWczD">
+    <mxGraphModel dx="860" dy="465" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <UserObject label="" mermaidData="{&#xa;  &quot;data&quot;: &quot;flowchart TB\n\n    %% =====================================================\n    %% INCOMING TRAFFIC\n    %% =====================================================\n\n    TRAFFIC[\&quot;Incoming Order Requests\&quot;]\n\n    WAF[\&quot;OCI WAF\&quot;]\n\n    APIGW[\&quot;OCI API Gateway&lt;br/&gt;Rate Limit / Routing\&quot;]\n\n\n    %% =====================================================\n    %% ORDER SERVICE\n    %% =====================================================\n\n    subgraph ORDER[\&quot;Order Service - OKE\&quot;]\n\n        ORDER_PODS[\&quot;Order Service Pods&lt;br/&gt;Java / Spring Boot&lt;br/&gt;Stateless\&quot;]\n\n        ORDER_METRICS[\&quot;Order Metrics&lt;br/&gt;RPS / CPU / Latency&lt;br/&gt;Concurrency\&quot;]\n\n    end\n\n\n    %% =====================================================\n    %% ORDER SERVICE AUTOSCALING\n    %% =====================================================\n\n    PROM[\&quot;Prometheus&lt;br/&gt;Application Metrics\&quot;]\n\n    HPA[\&quot;Kubernetes HPA&lt;br/&gt;Order Service\&quot;]\n\n    ORDER_POLICY[\&quot;Scaling Policy&lt;br/&gt;Min / Max Replicas&lt;br/&gt;Scale-Up / Scale-Down&lt;br/&gt;Stabilization Window\&quot;]\n\n\n    %% =====================================================\n    %% KAFKA\n    %% =====================================================\n\n    KAFKA[[\&quot;Kafka&lt;br/&gt;Order Topic&lt;br/&gt;Multiple Partitions\&quot;]]\n\n\n    %% =====================================================\n    %% SCM CONSUMER\n    %% =====================================================\n\n    subgraph SCM[\&quot;SCM Integration Service - OKE\&quot;]\n\n        CONSUMERS[\&quot;SCM Consumer Pods&lt;br/&gt;Java / Spring Boot\&quot;]\n\n        CONSUMER_METRICS[\&quot;Consumer Metrics&lt;br/&gt;Lag / Throughput&lt;br/&gt;Processing Time\&quot;]\n\n    end\n\n\n    %% =====================================================\n    %% KEDA CONSUMER SCALING\n    %% =====================================================\n\n    KEDA[\&quot;KEDA&lt;br/&gt;Kafka Scaler\&quot;]\n\n    KEDA_POLICY[\&quot;Consumer Scaling Policy&lt;br/&gt;Min / Max Replicas&lt;br/&gt;Target Kafka Lag&lt;br/&gt;Cooldown / Stabilization\&quot;]\n\n\n    %% =====================================================\n    %% ORACLE SCM\n    %% =====================================================\n\n    ORACLE[\&quot;Oracle SCM&lt;br/&gt;REST APIs\&quot;]\n\n\n    %% =====================================================\n    %% ORDER FLOW\n    %% =====================================================\n\n    TRAFFIC --&gt; WAF\n    WAF --&gt; APIGW\n    APIGW --&gt; ORDER_PODS\n\n    ORDER_PODS --&gt;|\&quot;Publish Order Event\&quot;| KAFKA\n\n\n    %% =====================================================\n    %% ORDER SERVICE METRICS\n    %% =====================================================\n\n    ORDER_PODS --&gt; ORDER_METRICS\n\n    ORDER_METRICS --&gt; PROM\n\n    PROM --&gt; HPA\n\n    HPA --&gt; ORDER_POLICY\n\n    ORDER_POLICY -. \&quot;Increase / Decrease Order Pods\&quot; .-&gt; ORDER_PODS\n\n\n    %% =====================================================\n    %% KAFKA CONSUMPTION\n    %% =====================================================\n\n    KAFKA --&gt;|\&quot;Partitions\&quot;| CONSUMERS\n\n    CONSUMERS --&gt;|\&quot;SCM REST Calls\&quot;| ORACLE\n\n\n    %% =====================================================\n    %% CONSUMER METRICS\n    %% =====================================================\n\n    CONSUMERS --&gt; CONSUMER_METRICS\n\n    CONSUMER_METRICS --&gt; KEDA\n\n    KEDA --&gt; KEDA_POLICY\n\n    KEDA_POLICY -. \&quot;Increase / Decrease Consumers\&quot; .-&gt; CONSUMERS\n\n\n    %% =====================================================\n    %% HIGH TRAFFIC\n    %% =====================================================\n\n    HIGH[\&quot;Traffic Spike&lt;br/&gt;RPS ↑\&quot;]\n\n    HIGH -. \&quot;High RPS / CPU / Latency\&quot; .-&gt; HPA\n\n    HIGH -. \&quot;More Events → Kafka Lag ↑\&quot; .-&gt; KEDA\n\n\n    %% =====================================================\n    %% LOW TRAFFIC\n    %% =====================================================\n\n    LOW[\&quot;Traffic Reduction&lt;br/&gt;RPS ↓\&quot;]\n\n    LOW -. \&quot;Lower RPS / CPU\&quot; .-&gt; HPA\n\n    LOW -. \&quot;Kafka Lag ↓\&quot; .-&gt; KEDA\n\n\n    %% =====================================================\n    %% CAPACITY GUARDRAILS\n    %% =====================================================\n\n    GUARD[\&quot;Capacity Guardrails&lt;br/&gt;Resource Requests / Limits&lt;br/&gt;Min / Max Replicas&lt;br/&gt;Pod Disruption Budget\&quot;]\n\n    ORDER_POLICY --&gt; GUARD\n\n    KEDA_POLICY --&gt; GUARD\n\n\n    %% =====================================================\n    %% COLORS\n    %% =====================================================\n\n    classDef traffic fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1;\n\n    classDef edge fill:#FFF3E0,stroke:#EF6C00,stroke-width:2px,color:#E65100;\n\n    classDef service fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20;\n\n    classDef kafka fill:#FFF8E1,stroke:#F9A825,stroke-width:2px,color:#6D4C00;\n\n    classDef scaling fill:#E8EAF6,stroke:#3949AB,stroke-width:2px,color:#1A237E;\n\n    classDef oracle fill:#FCE4EC,stroke:#C2185B,stroke-width:2px,color:#880E4F;\n\n    classDef high fill:#FFEBEE,stroke:#C62828,stroke-width:2px,color:#B71C1C;\n\n    classDef low fill:#E8F5E9,stroke:#388E3C,stroke-width:2px,color:#1B5E20;\n\n\n    class TRAFFIC traffic;\n\n    class WAF,APIGW edge;\n\n    class ORDER_PODS,ORDER_METRICS,CONSUMERS,CONSUMER_METRICS service;\n\n    class KAFKA kafka;\n\n    class PROM,HPA,ORDER_POLICY,KEDA,KEDA_POLICY,GUARD scaling;\n\n    class ORACLE oracle;\n\n    class HIGH high;\n\n    class LOW low;&quot;,&#xa;  &quot;config&quot;: null&#xa;}" id="zKa0N7SwzF-vakNjzOBo-1">
+          <mxCell connectable="0" parent="1" style="group;transparentBounds=1;editIcon=1;lockedGroup=0;groupPadding=10;" vertex="1">
+            <mxGeometry as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Order Service - OKE" mermaidId="n:ORDER" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Order Service - OKE" id="zKa0N7SwzF-vakNjzOBo-2">
+          <mxCell parent="zKa0N7SwzF-vakNjzOBo-1" style="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="325" width="277" x="881" y="401" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Order Service Pods&#xa;Java / Spring Boot&#xa;Stateless" mermaidId="n:ORDER_PODS" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Order Service Pods&#xa;Java / Spring Boot&#xa;Stateless" id="zKa0N7SwzF-vakNjzOBo-3">
+          <mxCell parent="zKa0N7SwzF-vakNjzOBo-2" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="93" width="194" x="42" y="45" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Order Metrics&#xa;RPS / CPU / Latency&#xa;Concurrency" mermaidId="n:ORDER_METRICS" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Order Metrics&#xa;RPS / CPU / Latency&#xa;Concurrency" id="zKa0N7SwzF-vakNjzOBo-4">
+          <mxCell parent="zKa0N7SwzF-vakNjzOBo-2" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="93" width="207" x="35" y="207" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:ORDER_PODS-&gt;ORDER_METRICS#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.49;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="" id="zKa0N7SwzF-vakNjzOBo-5">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-2" source="zKa0N7SwzF-vakNjzOBo-3" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.49;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-4">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="SCM Integration Service - OKE" mermaidId="n:SCM" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="SCM Integration Service - OKE" id="zKa0N7SwzF-vakNjzOBo-6">
+          <mxCell parent="zKa0N7SwzF-vakNjzOBo-1" style="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="305" width="285" x="224" y="775" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="SCM Consumer Pods&#xa;Java / Spring Boot" mermaidId="n:CONSUMERS" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="SCM Consumer Pods&#xa;Java / Spring Boot" id="zKa0N7SwzF-vakNjzOBo-7">
+          <mxCell parent="zKa0N7SwzF-vakNjzOBo-6" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="201" x="49" y="45" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Consumer Metrics&#xa;Lag / Throughput&#xa;Processing Time" mermaidId="n:CONSUMER_METRICS" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Consumer Metrics&#xa;Lag / Throughput&#xa;Processing Time" id="zKa0N7SwzF-vakNjzOBo-8">
+          <mxCell parent="zKa0N7SwzF-vakNjzOBo-6" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="93" width="187" x="35" y="187" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:CONSUMERS-&gt;CONSUMER_METRICS#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.44;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="" id="zKa0N7SwzF-vakNjzOBo-9">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-6" source="zKa0N7SwzF-vakNjzOBo-7" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.44;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-8">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="128" y="153" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Incoming Order Requests" mermaidId="n:TRAFFIC" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E3F2FD;strokeColor=#1565C0;fontColor=#0D47A1;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Incoming Order Requests" id="zKa0N7SwzF-vakNjzOBo-10">
+          <mxCell parent="zKa0N7SwzF-vakNjzOBo-1" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E3F2FD;strokeColor=#1565C0;fontColor=#0D47A1;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="54" width="238" x="901" y="90" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="OCI WAF" mermaidId="n:WAF" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#FFF3E0;strokeColor=#EF6C00;fontColor=#E65100;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="OCI WAF" id="zKa0N7SwzF-vakNjzOBo-11">
+          <mxCell parent="zKa0N7SwzF-vakNjzOBo-1" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#FFF3E0;strokeColor=#EF6C00;fontColor=#E65100;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="54" width="120" x="960" y="194" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="OCI API Gateway&#xa;Rate Limit / Routing" mermaidId="n:APIGW" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#FFF3E0;strokeColor=#EF6C00;fontColor=#E65100;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="OCI API Gateway&#xa;Rate Limit / Routing" id="zKa0N7SwzF-vakNjzOBo-12">
+          <mxCell parent="zKa0N7SwzF-vakNjzOBo-1" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#FFF3E0;strokeColor=#EF6C00;fontColor=#E65100;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="206" x="917" y="298" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Prometheus&#xa;Application Metrics" mermaidId="n:PROM" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8EAF6;strokeColor=#3949AB;fontColor=#1A237E;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Prometheus&#xa;Application Metrics" id="zKa0N7SwzF-vakNjzOBo-13">
+          <mxCell parent="zKa0N7SwzF-vakNjzOBo-1" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8EAF6;strokeColor=#3949AB;fontColor=#1A237E;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="198" x="1300" y="820" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Kubernetes HPA&#xa;Order Service" mermaidId="n:HPA" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8EAF6;strokeColor=#3949AB;fontColor=#1A237E;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Kubernetes HPA&#xa;Order Service" id="zKa0N7SwzF-vakNjzOBo-14">
+          <mxCell parent="zKa0N7SwzF-vakNjzOBo-1" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8EAF6;strokeColor=#3949AB;fontColor=#1A237E;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="172" x="1042" y="1149" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Scaling Policy&#xa;Min / Max Replicas&#xa;Scale-Up / Scale-Down&#xa;Stabilization Window" mermaidId="n:ORDER_POLICY" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8EAF6;strokeColor=#3949AB;fontColor=#1A237E;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Scaling Policy&#xa;Min / Max Replicas&#xa;Scale-Up / Scale-Down&#xa;Stabilization Window" id="zKa0N7SwzF-vakNjzOBo-15">
+          <mxCell parent="zKa0N7SwzF-vakNjzOBo-1" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8EAF6;strokeColor=#3949AB;fontColor=#1A237E;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="112" width="223" x="1210" y="1272" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Kafka&#xa;Order Topic&#xa;Multiple Partitions" mermaidId="n:KAFKA" mermaidBaseStyle="html=1;strokeWidth=2;shape=process;whiteSpace=wrap;size=0.04;fillColor=#FFF8E1;strokeColor=#F9A825;fontColor=#6D4C00;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Kafka&#xa;Order Topic&#xa;Multiple Partitions" id="zKa0N7SwzF-vakNjzOBo-16">
+          <mxCell parent="zKa0N7SwzF-vakNjzOBo-1" style="html=1;strokeWidth=2;shape=process;whiteSpace=wrap;size=0.04;fillColor=#FFF8E1;strokeColor=#F9A825;fontColor=#6D4C00;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="163" x="292" y="618" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="KEDA&#xa;Kafka Scaler" mermaidId="n:KEDA" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8EAF6;strokeColor=#3949AB;fontColor=#1A237E;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="KEDA&#xa;Kafka Scaler" id="zKa0N7SwzF-vakNjzOBo-17">
+          <mxCell parent="zKa0N7SwzF-vakNjzOBo-1" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8EAF6;strokeColor=#3949AB;fontColor=#1A237E;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="149" x="843" y="1149" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Consumer Scaling Policy&#xa;Min / Max Replicas&#xa;Target Kafka Lag&#xa;Cooldown / Stabilization" mermaidId="n:KEDA_POLICY" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8EAF6;strokeColor=#3949AB;fontColor=#1A237E;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Consumer Scaling Policy&#xa;Min / Max Replicas&#xa;Target Kafka Lag&#xa;Cooldown / Stabilization" id="zKa0N7SwzF-vakNjzOBo-18">
+          <mxCell parent="zKa0N7SwzF-vakNjzOBo-1" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8EAF6;strokeColor=#3949AB;fontColor=#1A237E;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="112" width="237" x="583" y="1272" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Oracle SCM&#xa;REST APIs" mermaidId="n:ORACLE" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#FCE4EC;strokeColor=#C2185B;fontColor=#880E4F;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Oracle SCM&#xa;REST APIs" id="zKa0N7SwzF-vakNjzOBo-19">
+          <mxCell parent="zKa0N7SwzF-vakNjzOBo-1" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#FCE4EC;strokeColor=#C2185B;fontColor=#880E4F;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="140" x="30" y="972" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Traffic Spike&#xa;RPS ↑" mermaidId="n:HIGH" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#FFEBEE;strokeColor=#C62828;fontColor=#B71C1C;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Traffic Spike&#xa;RPS ↑" id="zKa0N7SwzF-vakNjzOBo-20">
+          <mxCell parent="zKa0N7SwzF-vakNjzOBo-1" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#FFEBEE;strokeColor=#C62828;fontColor=#B71C1C;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="149" x="756" y="972" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Traffic Reduction&#xa;RPS ↓" mermaidId="n:LOW" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#388E3C;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Traffic Reduction&#xa;RPS ↓" id="zKa0N7SwzF-vakNjzOBo-21">
+          <mxCell parent="zKa0N7SwzF-vakNjzOBo-1" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#388E3C;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="183" x="1111" y="972" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Capacity Guardrails&#xa;Resource Requests / Limits&#xa;Min / Max Replicas&#xa;Pod Disruption Budget" mermaidId="n:GUARD" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8EAF6;strokeColor=#3949AB;fontColor=#1A237E;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Capacity Guardrails&#xa;Resource Requests / Limits&#xa;Min / Max Replicas&#xa;Pod Disruption Budget" id="zKa0N7SwzF-vakNjzOBo-22">
+          <mxCell parent="zKa0N7SwzF-vakNjzOBo-1" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8EAF6;strokeColor=#3949AB;fontColor=#1A237E;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="112" width="253" x="873" y="1434" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:TRAFFIC-&gt;WAF#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="" id="zKa0N7SwzF-vakNjzOBo-23">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-1" source="zKa0N7SwzF-vakNjzOBo-10" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-11">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:WAF-&gt;APIGW#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="" id="zKa0N7SwzF-vakNjzOBo-24">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-1" source="zKa0N7SwzF-vakNjzOBo-11" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-12">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:APIGW-&gt;ORDER_PODS#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="" id="zKa0N7SwzF-vakNjzOBo-25">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-1" source="zKa0N7SwzF-vakNjzOBo-12" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-3">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:ORDER_METRICS-&gt;PROM#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="" id="zKa0N7SwzF-vakNjzOBo-27">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-1" source="zKa0N7SwzF-vakNjzOBo-4" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-13">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:PROM-&gt;HPA#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=1;entryY=0.19;" mermaidBaseValue="" id="zKa0N7SwzF-vakNjzOBo-28">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-1" source="zKa0N7SwzF-vakNjzOBo-13" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=1;entryY=0.19;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-14">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1399" y="928" />
+                <mxPoint x="1399" y="1009" />
+                <mxPoint x="1399" y="1080" />
+                <mxPoint x="1399" y="1115" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:HPA-&gt;ORDER_POLICY#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0;entryY=0.08;" mermaidBaseValue="" id="zKa0N7SwzF-vakNjzOBo-29">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-1" source="zKa0N7SwzF-vakNjzOBo-14" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0;entryY=0.08;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-15">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1128" y="1247" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Increase / Decrease Order Pods" mermaidId="e:ORDER_POLICY-&gt;ORDER_PODS#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=1;exitY=0.13;entryX=0.91;entryY=1;" mermaidBaseValue="Increase / Decrease Order Pods" id="zKa0N7SwzF-vakNjzOBo-30">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-1" source="zKa0N7SwzF-vakNjzOBo-15" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=1;exitY=0.13;entryX=0.91;entryY=1;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-3">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1538" y="1247" />
+                <mxPoint x="1538" y="1186" />
+                <mxPoint x="1538" y="1115" />
+                <mxPoint x="1538" y="1080" />
+                <mxPoint x="1538" y="1009" />
+                <mxPoint x="1538" y="928" />
+                <mxPoint x="1538" y="857" />
+                <mxPoint x="1538" y="795" />
+                <mxPoint x="1538" y="761" />
+                <mxPoint x="1538" y="726" />
+                <mxPoint x="1538" y="655" />
+                <mxPoint x="1538" y="574" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Partitions" mermaidId="e:KAFKA-&gt;CONSUMERS#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="Partitions" id="zKa0N7SwzF-vakNjzOBo-31">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-1" source="zKa0N7SwzF-vakNjzOBo-16" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-7">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="SCM REST Calls" mermaidId="e:CONSUMERS-&gt;ORACLE#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.26;exitY=1;entryX=1;entryY=0.07;" mermaidBaseValue="SCM REST Calls" id="zKa0N7SwzF-vakNjzOBo-32">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-1" source="zKa0N7SwzF-vakNjzOBo-7" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.26;exitY=1;entryX=1;entryY=0.07;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-19">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="279" y="928" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:CONSUMER_METRICS-&gt;KEDA#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0;entryY=0.37;" mermaidBaseValue="" id="zKa0N7SwzF-vakNjzOBo-33">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-1" source="zKa0N7SwzF-vakNjzOBo-8" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0;entryY=0.37;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-17">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="352" y="1080" />
+                <mxPoint x="352" y="1115" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:KEDA-&gt;KEDA_POLICY#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=1;entryY=0.11;" mermaidBaseValue="" id="zKa0N7SwzF-vakNjzOBo-34">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-1" source="zKa0N7SwzF-vakNjzOBo-17" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=1;entryY=0.11;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-18">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="918" y="1247" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Increase / Decrease Consumers" mermaidId="e:KEDA_POLICY-&gt;CONSUMERS#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0;exitY=0.11;entryX=0.78;entryY=1;" mermaidBaseValue="Increase / Decrease Consumers" id="zKa0N7SwzF-vakNjzOBo-35">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-1" source="zKa0N7SwzF-vakNjzOBo-18" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0;exitY=0.11;entryX=0.78;entryY=1;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-7">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="484" y="1247" />
+                <mxPoint x="484" y="1186" />
+                <mxPoint x="484" y="1115" />
+                <mxPoint x="484" y="1080" />
+                <mxPoint x="484" y="1009" />
+                <mxPoint x="484" y="928" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="High RPS / CPU / Latency" mermaidId="e:HIGH-&gt;HPA#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.19;exitY=1;entryX=0;entryY=0.29;" mermaidBaseValue="High RPS / CPU / Latency" id="zKa0N7SwzF-vakNjzOBo-36">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-1" source="zKa0N7SwzF-vakNjzOBo-20" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.19;exitY=1;entryX=0;entryY=0.29;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-14">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="739" y="1080" />
+                <mxPoint x="739" y="1115" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="More Events → Kafka Lag ↑" mermaidId="e:HIGH-&gt;KEDA#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.9;exitY=1;entryX=0.6;entryY=0;" mermaidBaseValue="More Events → Kafka Lag ↑" id="zKa0N7SwzF-vakNjzOBo-37">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-1" source="zKa0N7SwzF-vakNjzOBo-20" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.9;exitY=1;entryX=0.6;entryY=0;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-17">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="948" y="1080" />
+                <mxPoint x="948" y="1115" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Lower RPS / CPU" mermaidId="e:LOW-&gt;HPA#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.33;exitY=1;entryX=0.54;entryY=0;" mermaidBaseValue="Lower RPS / CPU" id="zKa0N7SwzF-vakNjzOBo-38">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-1" source="zKa0N7SwzF-vakNjzOBo-21" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.33;exitY=1;entryX=0.54;entryY=0;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-14">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1142" y="1080" />
+                <mxPoint x="1142" y="1115" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Kafka Lag ↓" mermaidId="e:LOW-&gt;KEDA#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.67;exitY=1;entryX=1;entryY=0.29;" mermaidBaseValue="Kafka Lag ↓" id="zKa0N7SwzF-vakNjzOBo-39">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-1" source="zKa0N7SwzF-vakNjzOBo-21" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.67;exitY=1;entryX=1;entryY=0.29;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-17">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1264" y="1080" />
+                <mxPoint x="1264" y="1115" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:ORDER_POLICY-&gt;GUARD#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=1;entryY=0.21;" mermaidBaseValue="" id="zKa0N7SwzF-vakNjzOBo-40">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-1" source="zKa0N7SwzF-vakNjzOBo-15" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=1;entryY=0.21;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-22">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1321" y="1409" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:KEDA_POLICY-&gt;GUARD#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0;entryY=0.2;" mermaidBaseValue="" id="zKa0N7SwzF-vakNjzOBo-41">
+          <mxCell edge="1" parent="zKa0N7SwzF-vakNjzOBo-1" source="zKa0N7SwzF-vakNjzOBo-18" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0;entryY=0.2;rounded=0;" target="zKa0N7SwzF-vakNjzOBo-22">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="701" y="1409" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <mxCell id="zKa0N7SwzF-vakNjzOBo-43" edge="1" parent="zKa0N7SwzF-vakNjzOBo-1" source="zKa0N7SwzF-vakNjzOBo-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="zKa0N7SwzF-vakNjzOBo-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="zKa0N7SwzF-vakNjzOBo-42" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=19;fontStyle=1;fontColor=#FF8000;" value="LLD - Autoscaling Services + Kafka Consumers&amp;nbsp;" vertex="1">
+          <mxGeometry height="30" width="440" x="840" y="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

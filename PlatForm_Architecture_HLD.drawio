@@ -1,0 +1,332 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="ZCy1_R7DoulK4H0E54wA">
+    <mxGraphModel dx="860" dy="465" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <UserObject label="" mermaidData="{&#xa;  &quot;data&quot;: &quot;flowchart TB\n\n    %% =====================================================\n    %% USERS / PARTNERS\n    %% =====================================================\n\n    USERS[\&quot;Users / Partners\&quot;]\n\n\n    %% =====================================================\n    %% T-MOBILE EDGE\n    %% =====================================================\n\n    subgraph EDGE[\&quot;T-Mobile API / Edge Layer\&quot;]\n\n        WAF[\&quot;OCI WAF&lt;br/&gt;DDoS / OWASP / IP Protection\&quot;]\n\n        APIGW[\&quot;OCI API Gateway&lt;br/&gt;Authentication / Authorization&lt;br/&gt;Rate Limit / Routing\&quot;]\n\n    end\n\n\n    %% =====================================================\n    %% T-MOBILE BUSINESS SERVICES\n    %% =====================================================\n\n    subgraph SERVICES[\&quot;T-Mobile Business Services\&quot;]\n\n        ORDER[\&quot;Order Service&lt;br/&gt;Java / Spring Boot\&quot;]\n\n        INVENTORY[\&quot;Inventory Service\&quot;]\n\n        SHIPMENT[\&quot;Shipment Service\&quot;]\n\n        PROCUREMENT[\&quot;Procurement Service\&quot;]\n\n    end\n\n\n    %% =====================================================\n    %% DATA\n    %% =====================================================\n\n    DB[(\&quot;T-Mobile Order Database\&quot;)]\n\n\n    %% =====================================================\n    %% EVENT STREAMING\n    %% =====================================================\n\n    KAFKA[[\&quot;Kafka&lt;br/&gt;Enterprise Event Streaming&lt;br/&gt;Order / SCM Events\&quot;]]\n\n\n    %% =====================================================\n    %% SCM INTEGRATION\n    %% =====================================================\n\n    subgraph INTEGRATION[\&quot;T-Mobile SCM Integration\&quot;]\n\n        SCM_INT[\&quot;SCM Integration Service&lt;br/&gt;Kafka Consumers\&quot;]\n\n    end\n\n\n    %% =====================================================\n    %% T-MOBILE SECURITY\n    %% =====================================================\n\n    subgraph SECURITY[\&quot;OCI Security &amp; Secrets\&quot;]\n\n        IAM[\&quot;OCI IAM&lt;br/&gt;Roles / Policies&lt;br/&gt;Workload Identity\&quot;]\n\n        VAULT[\&quot;OCI Vault&lt;br/&gt;SCM Credentials&lt;br/&gt;Secrets / Certificates / Keys\&quot;]\n\n    end\n\n\n    %% =====================================================\n    %% ORACLE SCM SECURITY\n    %% =====================================================\n\n    AUTH[\&quot;Oracle Authorization Server&lt;br/&gt;OAuth2\&quot;]\n\n\n    %% =====================================================\n    %% ORACLE SCM\n    %% =====================================================\n\n    subgraph ORACLE[\&quot;Oracle SCM Cloud\&quot;]\n\n        SCM_API[\&quot;Oracle SCM&lt;br/&gt;REST APIs\&quot;]\n\n        SCM_DATA[(\&quot;Oracle SCM&lt;br/&gt;Business Data\&quot;)]\n\n    end\n\n\n    %% =====================================================\n    %% PRIMARY FLOW\n    %% =====================================================\n\n    USERS --&gt; WAF\n\n    WAF --&gt; APIGW\n\n    APIGW --&gt; ORDER\n\n    APIGW --&gt; INVENTORY\n\n    APIGW --&gt; SHIPMENT\n\n    APIGW --&gt; PROCUREMENT\n\n\n    %% =====================================================\n    %% DATABASE\n    %% =====================================================\n\n    ORDER --&gt;|\&quot;Order Persistence\&quot;| DB\n\n\n    %% =====================================================\n    %% EVENTS\n    %% =====================================================\n\n    ORDER --&gt;|\&quot;Order Events\&quot;| KAFKA\n\n    INVENTORY --&gt;|\&quot;Inventory Events\&quot;| KAFKA\n\n    SHIPMENT --&gt;|\&quot;Shipment Events\&quot;| KAFKA\n\n    PROCUREMENT --&gt;|\&quot;Procurement Events\&quot;| KAFKA\n\n\n    %% =====================================================\n    %% SCM INTEGRATION\n    %% =====================================================\n\n    KAFKA --&gt;|\&quot;Async Events\&quot;| SCM_INT\n\n\n    %% =====================================================\n    %% OCI IAM\n    %% =====================================================\n\n    IAM -. \&quot;Authorization / Policies\&quot; .-&gt; APIGW\n\n    IAM -. \&quot;Workload Identity\&quot; .-&gt; ORDER\n\n    IAM -. \&quot;Service Identity\&quot; .-&gt; SCM_INT\n\n\n    %% =====================================================\n    %% OCI VAULT\n    %% =====================================================\n\n    SCM_INT -. \&quot;Retrieve SCM Credentials\&quot; .-&gt; VAULT\n\n    VAULT -. \&quot;Client ID / Secret\&quot; .-&gt; SCM_INT\n\n\n    %% =====================================================\n    %% OAUTH2\n    %% =====================================================\n\n    SCM_INT --&gt;|\&quot;OAuth2 Client Credentials\&quot;| AUTH\n\n    AUTH --&gt;|\&quot;Short-Lived Bearer Token\&quot;| SCM_INT\n\n\n    %% =====================================================\n    %% ORACLE SCM API\n    %% =====================================================\n\n    SCM_INT --&gt;|\&quot;Authorization: Bearer Token\&quot;| SCM_API\n\n    SCM_API --&gt; SCM_DATA\n\n\n    %% =====================================================\n    %% COLORS\n    %% =====================================================\n\n    classDef users fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1;\n\n    classDef edge fill:#FFF3E0,stroke:#EF6C00,stroke-width:2px,color:#E65100;\n\n    classDef service fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20;\n\n    classDef database fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px,color:#4A148C;\n\n    classDef kafka fill:#FFF8E1,stroke:#F9A825,stroke-width:2px,color:#6D4C00;\n\n    classDef integration fill:#E0F7FA,stroke:#00838F,stroke-width:2px,color:#006064;\n\n    classDef security fill:#EDE7F6,stroke:#512DA8,stroke-width:2px,color:#311B92;\n\n    classDef auth fill:#FFFDE7,stroke:#827717,stroke-width:2px,color:#5F5B00;\n\n    classDef oracle fill:#FCE4EC,stroke:#C2185B,stroke-width:2px,color:#880E4F;\n\n\n    %% =====================================================\n    %% APPLY COLORS\n    %% =====================================================\n\n    class USERS users;\n\n    class WAF,APIGW edge;\n\n    class ORDER,INVENTORY,SHIPMENT,PROCUREMENT service;\n\n    class DB database;\n\n    class KAFKA kafka;\n\n    class SCM_INT integration;\n\n    class IAM,VAULT security;\n\n    class AUTH auth;\n\n    class SCM_API,SCM_DATA oracle;&quot;,&#xa;  &quot;config&quot;: null&#xa;}" id="VIR9rBysnEuaQ3Zl9BE0-1">
+          <mxCell connectable="0" parent="1" style="group;transparentBounds=1;editIcon=1;lockedGroup=0;groupPadding=10;" vertex="1">
+            <mxGeometry as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="T-Mobile API / Edge Layer" mermaidId="n:EDGE" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="T-Mobile API / Edge Layer" id="VIR9rBysnEuaQ3Zl9BE0-2">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-1" style="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="315" width="350" x="517" y="164" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="OCI WAF&#xa;DDoS / OWASP / IP Protection" mermaidId="n:WAF" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#FFF3E0;strokeColor=#EF6C00;fontColor=#E65100;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="OCI WAF&#xa;DDoS / OWASP / IP Protection" id="VIR9rBysnEuaQ3Zl9BE0-3">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-2" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#FFF3E0;strokeColor=#EF6C00;fontColor=#E65100;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="273" x="38" y="45" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="OCI API Gateway&#xa;Authentication / Authorization&#xa;Rate Limit / Routing" mermaidId="n:APIGW" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#FFF3E0;strokeColor=#EF6C00;fontColor=#E65100;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="OCI API Gateway&#xa;Authentication / Authorization&#xa;Rate Limit / Routing" id="VIR9rBysnEuaQ3Zl9BE0-4">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-2" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#FFF3E0;strokeColor=#EF6C00;fontColor=#E65100;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="93" width="280" x="35" y="197" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:WAF-&gt;APIGW#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="" id="VIR9rBysnEuaQ3Zl9BE0-5">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-2" source="VIR9rBysnEuaQ3Zl9BE0-3" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-4">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="T-Mobile Business Services" mermaidId="n:SERVICES" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="T-Mobile Business Services" id="VIR9rBysnEuaQ3Zl9BE0-6">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-1" style="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="143" width="1020" x="20" y="509" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Order Service&#xa;Java / Spring Boot" mermaidId="n:ORDER" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Order Service&#xa;Java / Spring Boot" id="VIR9rBysnEuaQ3Zl9BE0-7">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-6" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="192" x="793" y="45" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Inventory Service" mermaidId="n:INVENTORY" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Inventory Service" id="VIR9rBysnEuaQ3Zl9BE0-8">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-6" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="54" width="184" x="527" y="55" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Shipment Service" mermaidId="n:SHIPMENT" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Shipment Service" id="VIR9rBysnEuaQ3Zl9BE0-9">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-6" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="54" width="184" x="293" y="55" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Procurement Service" mermaidId="n:PROCUREMENT" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Procurement Service" id="VIR9rBysnEuaQ3Zl9BE0-10">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-6" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="54" width="208" x="35" y="55" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="T-Mobile SCM Integration" mermaidId="n:INTEGRATION" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="T-Mobile SCM Integration" id="VIR9rBysnEuaQ3Zl9BE0-11">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-1" style="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="143" width="299" x="460" y="843" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="SCM Integration Service&#xa;Kafka Consumers" mermaidId="n:SCM_INT" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E0F7FA;strokeColor=#00838F;fontColor=#006064;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="SCM Integration Service&#xa;Kafka Consumers" id="VIR9rBysnEuaQ3Zl9BE0-12">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-11" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E0F7FA;strokeColor=#00838F;fontColor=#006064;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="229" x="35" y="45" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="OCI Security &amp; Secrets" mermaidId="n:SECURITY" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="OCI Security &amp; Secrets" id="VIR9rBysnEuaQ3Zl9BE0-13">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-1" style="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="1044" width="334" x="1162" y="154" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="OCI IAM&#xa;Roles / Policies&#xa;Workload Identity" mermaidId="n:IAM" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#EDE7F6;strokeColor=#512DA8;fontColor=#311B92;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="OCI IAM&#xa;Roles / Policies&#xa;Workload Identity" id="VIR9rBysnEuaQ3Zl9BE0-14">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-13" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#EDE7F6;strokeColor=#512DA8;fontColor=#311B92;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="93" width="187" x="98" y="45" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="OCI Vault&#xa;SCM Credentials&#xa;Secrets / Certificates / Keys" mermaidId="n:VAULT" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#EDE7F6;strokeColor=#512DA8;fontColor=#311B92;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="OCI Vault&#xa;SCM Credentials&#xa;Secrets / Certificates / Keys" id="VIR9rBysnEuaQ3Zl9BE0-15">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-13" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#EDE7F6;strokeColor=#512DA8;fontColor=#311B92;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="93" width="264" x="35" y="926" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Oracle SCM Cloud" mermaidId="n:ORACLE" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Oracle SCM Cloud" id="VIR9rBysnEuaQ3Zl9BE0-16">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-1" style="html=1;whiteSpace=wrap;strokeWidth=1;verticalAlign=top;fillColor=light-dark(#ffffde,#1f2020);strokeColor=light-dark(#aaaa33,#cccccc);fontColor=light-dark(#333333,#cccccc);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="309" width="210" x="104" y="1045" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Oracle SCM&#xa;REST APIs" mermaidId="n:SCM_API" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#FCE4EC;strokeColor=#C2185B;fontColor=#880E4F;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Oracle SCM&#xa;REST APIs" id="VIR9rBysnEuaQ3Zl9BE0-17">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-16" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#FCE4EC;strokeColor=#C2185B;fontColor=#880E4F;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="140" x="35" y="45" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Oracle SCM&#xa;Business Data" mermaidId="n:SCM_DATA" mermaidBaseStyle="html=1;shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;strokeWidth=2;whiteSpace=wrap;fillColor=#FCE4EC;strokeColor=#C2185B;fontColor=#880E4F;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Oracle SCM&#xa;Business Data" id="VIR9rBysnEuaQ3Zl9BE0-18">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-16" style="html=1;shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;strokeWidth=2;whiteSpace=wrap;fillColor=#FCE4EC;strokeColor=#C2185B;fontColor=#880E4F;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="81" width="112" x="49" y="203" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:SCM_API-&gt;SCM_DATA#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="" id="VIR9rBysnEuaQ3Zl9BE0-19">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-16" source="VIR9rBysnEuaQ3Zl9BE0-17" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-18">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Users / Partners" mermaidId="n:USERS" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E3F2FD;strokeColor=#1565C0;fontColor=#0D47A1;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Users / Partners" id="VIR9rBysnEuaQ3Zl9BE0-20">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-1" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E3F2FD;strokeColor=#1565C0;fontColor=#0D47A1;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="54" width="176" x="604" y="70" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="T-Mobile Order Database" mermaidId="n:DB" mermaidBaseStyle="html=1;shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;strokeWidth=2;whiteSpace=wrap;fillColor=#F3E5F5;strokeColor=#7B1FA2;fontColor=#4A148C;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="T-Mobile Order Database" id="VIR9rBysnEuaQ3Zl9BE0-21">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-1" style="html=1;shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;strokeWidth=2;whiteSpace=wrap;fillColor=#F3E5F5;strokeColor=#7B1FA2;fontColor=#4A148C;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="67" width="191" x="878" y="724" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Kafka&#xa;Enterprise Event Streaming&#xa;Order / SCM Events" mermaidId="n:KAFKA" mermaidBaseStyle="html=1;strokeWidth=2;shape=process;whiteSpace=wrap;size=0.04;fillColor=#FFF8E1;strokeColor=#F9A825;fontColor=#6D4C00;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Kafka&#xa;Enterprise Event Streaming&#xa;Order / SCM Events" id="VIR9rBysnEuaQ3Zl9BE0-22">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-1" style="html=1;strokeWidth=2;shape=process;whiteSpace=wrap;size=0.04;fillColor=#FFF8E1;strokeColor=#F9A825;fontColor=#6D4C00;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="227" x="496" y="721" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Oracle Authorization Server&#xa;OAuth2" mermaidId="n:AUTH" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#FFFDE7;strokeColor=#827717;fontColor=#5F5B00;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Oracle Authorization Server&#xa;OAuth2" id="VIR9rBysnEuaQ3Zl9BE0-23">
+          <mxCell parent="VIR9rBysnEuaQ3Zl9BE0-1" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#FFFDE7;strokeColor=#827717;fontColor=#5F5B00;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="258" x="494" y="1090" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:USERS-&gt;WAF#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="" id="VIR9rBysnEuaQ3Zl9BE0-24">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-1" source="VIR9rBysnEuaQ3Zl9BE0-20" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-3">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:APIGW-&gt;ORDER#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=1;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="" id="VIR9rBysnEuaQ3Zl9BE0-25">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-1" source="VIR9rBysnEuaQ3Zl9BE0-4" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=1;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-7">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="909" y="479" />
+                <mxPoint x="909" y="504" />
+                <mxPoint x="909" y="529" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:APIGW-&gt;INVENTORY#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.38;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="" id="VIR9rBysnEuaQ3Zl9BE0-26">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-1" source="VIR9rBysnEuaQ3Zl9BE0-4" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0.38;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-8">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="639" y="479" />
+                <mxPoint x="639" y="504" />
+                <mxPoint x="639" y="529" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:APIGW-&gt;SHIPMENT#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0;exitY=0.87;entryX=0.5;entryY=0;" mermaidBaseValue="" id="VIR9rBysnEuaQ3Zl9BE0-27">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-1" source="VIR9rBysnEuaQ3Zl9BE0-4" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0;exitY=0.87;entryX=0.5;entryY=0;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-9">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="405" y="479" />
+                <mxPoint x="405" y="504" />
+                <mxPoint x="405" y="529" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:APIGW-&gt;PROCUREMENT#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0;exitY=0.7;entryX=0.5;entryY=0;" mermaidBaseValue="" id="VIR9rBysnEuaQ3Zl9BE0-28">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-1" source="VIR9rBysnEuaQ3Zl9BE0-4" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);exitX=0;exitY=0.7;entryX=0.5;entryY=0;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-10">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="159" y="479" />
+                <mxPoint x="159" y="504" />
+                <mxPoint x="159" y="529" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Order Persistence" mermaidId="e:ORDER-&gt;DB#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.7;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="Order Persistence" id="VIR9rBysnEuaQ3Zl9BE0-29">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-1" source="VIR9rBysnEuaQ3Zl9BE0-7" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.7;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-21">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="974" y="652" />
+                <mxPoint x="974" y="687" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Order Events" mermaidId="e:ORDER-&gt;KAFKA#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.22;exitY=1;entryX=0.98;entryY=0;" mermaidBaseValue="Order Events" id="VIR9rBysnEuaQ3Zl9BE0-30">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-1" source="VIR9rBysnEuaQ3Zl9BE0-7" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.22;exitY=1;entryX=0.98;entryY=0;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-22">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="820" y="652" />
+                <mxPoint x="820" y="687" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Inventory Events" mermaidId="e:INVENTORY-&gt;KAFKA#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.56;entryY=0;" mermaidBaseValue="Inventory Events" id="VIR9rBysnEuaQ3Zl9BE0-31">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-1" source="VIR9rBysnEuaQ3Zl9BE0-8" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.56;entryY=0;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-22">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="639" y="652" />
+                <mxPoint x="639" y="687" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Shipment Events" mermaidId="e:SHIPMENT-&gt;KAFKA#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.04;entryY=0;" mermaidBaseValue="Shipment Events" id="VIR9rBysnEuaQ3Zl9BE0-32">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-1" source="VIR9rBysnEuaQ3Zl9BE0-9" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.04;entryY=0;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-22">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="405" y="652" />
+                <mxPoint x="405" y="687" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Procurement Events" mermaidId="e:PROCUREMENT-&gt;KAFKA#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0;entryY=0.26;" mermaidBaseValue="Procurement Events" id="VIR9rBysnEuaQ3Zl9BE0-33">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-1" source="VIR9rBysnEuaQ3Zl9BE0-10" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0;entryY=0.26;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-22">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="159" y="652" />
+                <mxPoint x="159" y="687" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Async Events" mermaidId="e:KAFKA-&gt;SCM_INT#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="Async Events" id="VIR9rBysnEuaQ3Zl9BE0-34">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-1" source="VIR9rBysnEuaQ3Zl9BE0-22" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-12">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Authorization / Policies" mermaidId="e:IAM-&gt;APIGW#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.21;exitY=1;entryX=1;entryY=0.29;" mermaidBaseValue="Authorization / Policies" id="VIR9rBysnEuaQ3Zl9BE0-35">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-1" source="VIR9rBysnEuaQ3Zl9BE0-14" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.21;exitY=1;entryX=1;entryY=0.29;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-4">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1259" y="327" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Workload Identity" mermaidId="e:IAM-&gt;ORDER#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.53;exitY=1;entryX=1;entryY=0.33;" mermaidBaseValue="Workload Identity" id="VIR9rBysnEuaQ3Zl9BE0-36">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-1" source="VIR9rBysnEuaQ3Zl9BE0-14" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.53;exitY=1;entryX=1;entryY=0.33;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-7">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1364" y="327" />
+                <mxPoint x="1364" y="408" />
+                <mxPoint x="1364" y="479" />
+                <mxPoint x="1364" y="504" />
+                <mxPoint x="1364" y="529" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Service Identity" mermaidId="e:IAM-&gt;SCM_INT#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.79;exitY=1;entryX=1;entryY=0.38;" mermaidBaseValue="Service Identity" id="VIR9rBysnEuaQ3Zl9BE0-37">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-1" source="VIR9rBysnEuaQ3Zl9BE0-14" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.79;exitY=1;entryX=1;entryY=0.38;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-12">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="1447" y="327" />
+                <mxPoint x="1447" y="408" />
+                <mxPoint x="1447" y="479" />
+                <mxPoint x="1447" y="504" />
+                <mxPoint x="1447" y="529" />
+                <mxPoint x="1447" y="591" />
+                <mxPoint x="1447" y="652" />
+                <mxPoint x="1447" y="687" />
+                <mxPoint x="1447" y="758" />
+                <mxPoint x="1447" y="829" />
+                <mxPoint x="1447" y="863" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Retrieve SCM Credentials" mermaidId="e:SCM_INT-&gt;VAULT#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=1;exitY=0.678082191780822;entryX=0;entryY=0.6397849462365591;curved=1;exitX=1;exitY=0.68;entryX=0;entryY=0.64;" mermaidBaseValue="Retrieve SCM Credentials" id="VIR9rBysnEuaQ3Zl9BE0-38">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-1" source="VIR9rBysnEuaQ3Zl9BE0-12" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=1;exitY=0.68;entryX=0;entryY=0.64;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-15">
+            <mxGeometry relative="1" as="geometry">
+              <mxPoint as="offset" />
+              <Array as="points">
+                <mxPoint x="961" y="1127" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Client ID / Secret" mermaidId="e:VAULT-&gt;SCM_INT#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0;exitY=0.3602150537634409;entryX=1;entryY=0.3219178082191781;curved=1;exitX=0;exitY=0.36;entryX=1;entryY=0.32;" mermaidBaseValue="Client ID / Secret" id="VIR9rBysnEuaQ3Zl9BE0-39">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-1" source="VIR9rBysnEuaQ3Zl9BE0-15" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0;exitY=0.36;entryX=1;entryY=0.32;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-12">
+            <mxGeometry relative="1" as="geometry">
+              <mxPoint as="offset" />
+              <Array as="points">
+                <mxPoint x="961" y="951" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="OAuth2 Client Credentials" mermaidId="e:SCM_INT-&gt;AUTH#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5567685589519651;exitY=1;entryX=0.5503875968992248;entryY=0;curved=1;exitX=0.56;exitY=1;entryX=0.55;entryY=0;" mermaidBaseValue="OAuth2 Client Credentials" id="VIR9rBysnEuaQ3Zl9BE0-40">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-1" source="VIR9rBysnEuaQ3Zl9BE0-12" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.56;exitY=1;entryX=0.55;entryY=0;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-23">
+            <mxGeometry relative="1" as="geometry">
+              <mxPoint as="offset" />
+              <Array as="points">
+                <mxPoint x="721" y="1026" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Short-Lived Bearer Token" mermaidId="e:AUTH-&gt;SCM_INT#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.4496124031007752;exitY=0;entryX=0.4432314410480349;entryY=1;curved=1;exitX=0.45;exitY=0;entryX=0.44;entryY=1;" mermaidBaseValue="Short-Lived Bearer Token" id="VIR9rBysnEuaQ3Zl9BE0-41">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-1" source="VIR9rBysnEuaQ3Zl9BE0-23" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.45;exitY=0;entryX=0.44;entryY=1;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-12">
+            <mxGeometry relative="1" as="geometry">
+              <mxPoint as="offset" />
+              <Array as="points">
+                <mxPoint x="514" y="1026" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Authorization: Bearer Token" mermaidId="e:SCM_INT-&gt;SCM_API#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0;exitY=0.74;entryX=0.5;entryY=0;" mermaidBaseValue="Authorization: Bearer Token" id="VIR9rBysnEuaQ3Zl9BE0-42">
+          <mxCell edge="1" parent="VIR9rBysnEuaQ3Zl9BE0-1" source="VIR9rBysnEuaQ3Zl9BE0-12" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0;exitY=0.74;entryX=0.5;entryY=0;rounded=0;" target="VIR9rBysnEuaQ3Zl9BE0-17">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="209" y="986" />
+                <mxPoint x="209" y="1021" />
+                <mxPoint x="209" y="1055" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <mxCell id="VIR9rBysnEuaQ3Zl9BE0-43" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=19;fontStyle=1;fontColor=#EA6B66;" value="Enterprise Platform Architecture" vertex="1">
+          <mxGeometry height="30" width="310" x="510" y="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

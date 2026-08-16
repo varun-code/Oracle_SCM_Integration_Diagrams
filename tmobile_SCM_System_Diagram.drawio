@@ -1,0 +1,98 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="5-68hJWWWVSkX6rm5lt9">
+    <mxGraphModel dx="1710" dy="465" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <UserObject label="" mermaidData="{&#xa;  &quot;data&quot;: &quot;flowchart TB\n\n    %% =====================================================\n    %% EXTERNAL ACTORS\n    %% =====================================================\n\n    USERS[\&quot;Users / Partners\&quot;]\n\n\n    %% =====================================================\n    %% T-MOBILE SYSTEM\n    %% =====================================================\n\n    TMOBILE[\&quot;T-Mobile&lt;br/&gt;Microservices\&quot;]\n\n\n    %% =====================================================\n    %% INTEGRATION SYSTEM\n    %% =====================================================\n\n    INTEGRATION[\&quot;SCM Integration&lt;br/&gt;Platform\&quot;]\n\n\n    %% =====================================================\n    %% ORACLE SCM\n    %% =====================================================\n\n    ORACLE[\&quot;Oracle SCM Cloud&lt;br/&gt;Supply Chain Platform\&quot;]\n\n\n    %% =====================================================\n    %% MAIN BUSINESS FLOW\n    %% =====================================================\n\n    USERS --&gt;|\&quot;Business Requests\&quot;| TMOBILE\n\n    TMOBILE --&gt;|\&quot;Integration Events\&quot;| INTEGRATION\n\n    INTEGRATION --&gt;|\&quot;Secure SCM Integration\&quot;| ORACLE\n\n\n    %% =====================================================\n    %% RESPONSE / STATUS\n    %% =====================================================\n\n    ORACLE -. \&quot;SCM Responses / Status\&quot; .-&gt; INTEGRATION\n\n    INTEGRATION -. \&quot;Business Status\&quot; .-&gt; TMOBILE\n\n    TMOBILE -. \&quot;Business Response\&quot; .-&gt; USERS\n\n\n    %% =====================================================\n    %% COLORS\n    %% =====================================================\n\n    classDef external fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1;\n\n    classDef tmobile fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20;\n\n    classDef integration fill:#E0F7FA,stroke:#00838F,stroke-width:2px,color:#006064;\n\n    classDef oracle fill:#FCE4EC,stroke:#C2185B,stroke-width:2px,color:#880E4F;\n\n\n    class USERS external;\n\n    class TMOBILE tmobile;\n\n    class INTEGRATION integration;\n\n    class ORACLE oracle;&quot;,&#xa;  &quot;config&quot;: null&#xa;}" id="c-VwAzHKYG6W_ZGafm38-1">
+          <mxCell connectable="0" parent="1" style="group;transparentBounds=1;editIcon=1;lockedGroup=0;groupPadding=10;" vertex="1">
+            <mxGeometry as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Users / Partners" mermaidId="n:USERS" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E3F2FD;strokeColor=#1565C0;fontColor=#0D47A1;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Users / Partners" id="c-VwAzHKYG6W_ZGafm38-2">
+          <mxCell parent="c-VwAzHKYG6W_ZGafm38-1" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#fff2cc;strokeColor=#d6b656;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="54" width="176" x="52" y="90" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="T-Mobile&#xa;Microservices" mermaidId="n:TMOBILE" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="T-Mobile&#xa;Microservices" id="c-VwAzHKYG6W_ZGafm38-3">
+          <mxCell parent="c-VwAzHKYG6W_ZGafm38-1" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E8F5E9;strokeColor=#2E7D32;fontColor=#1B5E20;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="156" x="62" y="213" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="SCM Integration&#xa;Platform" mermaidId="n:INTEGRATION" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E0F7FA;strokeColor=#00838F;fontColor=#006064;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="SCM Integration&#xa;Platform" id="c-VwAzHKYG6W_ZGafm38-4">
+          <mxCell parent="c-VwAzHKYG6W_ZGafm38-1" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#E0F7FA;strokeColor=#00838F;fontColor=#006064;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="173" x="53" y="355" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Oracle SCM Cloud&#xa;Supply Chain Platform" mermaidId="n:ORACLE" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#FCE4EC;strokeColor=#C2185B;fontColor=#880E4F;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="Oracle SCM Cloud&#xa;Supply Chain Platform" id="c-VwAzHKYG6W_ZGafm38-5">
+          <mxCell parent="c-VwAzHKYG6W_ZGafm38-1" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=#FCE4EC;strokeColor=#C2185B;fontColor=#880E4F;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="73" width="219" x="30" y="497" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="Business Requests" mermaidId="e:USERS-&gt;TMOBILE#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5738636363636364;exitY=1;entryX=0.5833333333333334;entryY=0;curved=1;exitX=0.57;exitY=1;entryX=0.58;entryY=0;" mermaidBaseValue="Business Requests" id="c-VwAzHKYG6W_ZGafm38-6">
+          <mxCell edge="1" parent="c-VwAzHKYG6W_ZGafm38-1" source="c-VwAzHKYG6W_ZGafm38-2" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.57;exitY=1;entryX=0.58;entryY=0;rounded=0;" target="c-VwAzHKYG6W_ZGafm38-3">
+            <mxGeometry relative="1" as="geometry">
+              <mxPoint as="offset" />
+              <Array as="points">
+                <mxPoint x="216" y="179" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Integration Events" mermaidId="e:TMOBILE-&gt;INTEGRATION#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5833333333333334;exitY=1;entryX=0.5751445086705202;entryY=0;curved=1;exitX=0.58;exitY=1;entryX=0.58;entryY=0;" mermaidBaseValue="Integration Events" id="c-VwAzHKYG6W_ZGafm38-7">
+          <mxCell edge="1" parent="c-VwAzHKYG6W_ZGafm38-1" source="c-VwAzHKYG6W_ZGafm38-3" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.58;exitY=1;entryX=0.58;entryY=0;rounded=0;" target="c-VwAzHKYG6W_ZGafm38-4">
+            <mxGeometry relative="1" as="geometry">
+              <mxPoint as="offset" />
+              <Array as="points">
+                <mxPoint x="217" y="321" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Secure SCM Integration" mermaidId="e:INTEGRATION-&gt;ORACLE#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5751445086705202;exitY=1;entryX=0.5593607305936072;entryY=0;curved=1;exitX=0.58;exitY=1;entryX=0.56;entryY=0;" mermaidBaseValue="Secure SCM Integration" id="c-VwAzHKYG6W_ZGafm38-8">
+          <mxCell edge="1" parent="c-VwAzHKYG6W_ZGafm38-1" source="c-VwAzHKYG6W_ZGafm38-4" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.58;exitY=1;entryX=0.56;entryY=0;rounded=0;" target="c-VwAzHKYG6W_ZGafm38-5">
+            <mxGeometry relative="1" as="geometry">
+              <mxPoint as="offset" />
+              <Array as="points">
+                <mxPoint x="234" y="463" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="SCM Responses / Status" mermaidId="e:ORACLE-&gt;INTEGRATION#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.4406392694063927;exitY=0;entryX=0.42485549132947975;entryY=1;curved=1;exitX=0.44;exitY=0;entryX=0.42;entryY=1;" mermaidBaseValue="SCM Responses / Status" id="c-VwAzHKYG6W_ZGafm38-9">
+          <mxCell edge="1" parent="c-VwAzHKYG6W_ZGafm38-1" source="c-VwAzHKYG6W_ZGafm38-5" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.44;exitY=0;entryX=0.42;entryY=1;rounded=0;" target="c-VwAzHKYG6W_ZGafm38-4">
+            <mxGeometry relative="1" as="geometry">
+              <mxPoint as="offset" />
+              <Array as="points">
+                <mxPoint x="44" y="463" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Business Status" mermaidId="e:INTEGRATION-&gt;TMOBILE#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.42485549132947975;exitY=0;entryX=0.4166666666666667;entryY=1;curved=1;exitX=0.42;exitY=0;entryX=0.42;entryY=1;" mermaidBaseValue="Business Status" id="c-VwAzHKYG6W_ZGafm38-10">
+          <mxCell edge="1" parent="c-VwAzHKYG6W_ZGafm38-1" source="c-VwAzHKYG6W_ZGafm38-4" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.42;exitY=0;entryX=0.42;entryY=1;rounded=0;" target="c-VwAzHKYG6W_ZGafm38-3">
+            <mxGeometry relative="1" as="geometry">
+              <mxPoint as="offset" />
+              <Array as="points">
+                <mxPoint x="74" y="321" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="Business Response" mermaidId="e:TMOBILE-&gt;USERS#0" mermaidBaseStyle="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.4166666666666667;exitY=0;entryX=0.42613636363636365;entryY=1;curved=1;exitX=0.42;exitY=0;entryX=0.43;entryY=1;" mermaidBaseValue="Business Response" id="c-VwAzHKYG6W_ZGafm38-11">
+          <mxCell edge="1" parent="c-VwAzHKYG6W_ZGafm38-1" source="c-VwAzHKYG6W_ZGafm38-3" style="curved=1;dashed=1;dashPattern=2 3;fixDash=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.42;exitY=0;entryX=0.43;entryY=1;rounded=0;" target="c-VwAzHKYG6W_ZGafm38-2">
+            <mxGeometry relative="1" as="geometry">
+              <mxPoint as="offset" />
+              <Array as="points">
+                <mxPoint x="64" y="179" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <mxCell id="c-VwAzHKYG6W_ZGafm38-12" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=16;fontStyle=1;fontFamily=Helvetica;fontColor=#B5739D;" value="T-Mobile to Oracl SCM System Diagram" vertex="1">
+          <mxGeometry height="30" width="340" x="-10" y="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
